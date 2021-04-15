@@ -23,7 +23,7 @@ int GetNodePosition();
 int ListIsEmpty(NodePtr *head);
 
 int ListIsEmpty(NodePtr *head){
-    return head == NULL;
+    return *head == NULL;
 }
 
 // Create a List with random value
@@ -37,7 +37,7 @@ void CreateList(NodePtr *head, int size){
 
     //assign the attributes of the first node
     newNode->value = randomValue;
-    newNode->next = *head;
+    newNode->next = NULL;
 
     //link the first node
     *head = newNode;
@@ -52,6 +52,33 @@ void CreateList(NodePtr *head, int size){
         randomValue = rand()%100+1;
         currentNode->value = randomValue;
         currentNode->next = NULL;
+    }
+}
+
+void DeleteNode(NodePtr *head, int DeleteData){
+
+    // first node is matched
+    if ((*head)->value == DeleteData){
+        *head = (*head)->next;
+        printf("%d Deleted!\n", DeleteData);
+    }
+    else{
+        NodePtr previousNode = (*head);
+        NodePtr currentNode = (*head)->next;
+
+        //traverse the list to find the fist DeteleData
+        while(currentNode->value != DeleteData && currentNode->next != NULL){
+            previousNode = currentNode;
+            currentNode = currentNode->next;
+        }
+        if (currentNode->value == DeleteData){
+            previousNode->next = currentNode->next;
+            free(currentNode);
+            printf("%d Deleted!\n", DeleteData);
+        }
+        else{
+            printf("%d not found!\n", DeleteData);
+        }
     }
 }
 
@@ -101,16 +128,12 @@ void InsertNode(NodePtr *head, int data, int pos){
 
 }
 
-void DeleteNode(NodePtr *head, int data){
-
-}
-
 int main(){
 
     NodePtr start = NULL;
 
     int size = 10;
-    assert(ListIsEmpty(start));
+    assert(ListIsEmpty(&start));
 
     CreateList(&start, size);
     PrintList(&start);
@@ -132,8 +155,9 @@ int main(){
                 InsertNode(&start, data, pos);
                 break;
             case 2:
-                scanf("Data:%d", data);
-                //DeleteNode(&start, data);
+                printf("Data:");
+                scanf("%d", &data);
+                DeleteNode(&start, data);
                 break;
             case 3:
                 printf("Delete List!!\n");
